@@ -1,84 +1,103 @@
-Given two lists A and B, and B is an anagram of A. B is an anagram of A means B is made by randomizing the order of the elements in A.
-We want to find an index mapping P, from A to B. A mapping P[i] = j means the ith element in A appears in B at index j.
-These lists A and B may contain duplicates. If there are multiple answers, output any of them.
-For example, given
-A = [12, 28, 46, 32, 50]  B = [50, 12, 32, 46, 28]  
-We should return
-[1, 4, 3, 2, 0]  
-as  P[0] = 1 because the  0th element of  A appears at  B[1], and  P[1] = 4 because the  1st element of  A appears at  B[4], and so on.
-Note:
-1.  A, B have equal lengths in range [1, 100].
-2.  A[i], B[i] are integers in range [0, 10^5]
+1150. Page Numbers
+Time limit: 1.0 second
+Memory limit: 64 MB
 
+John Smith has decided to number the pages in his notebook from 1 to N. Please, figure out the number of zeros, ones, twos, …, nines he might need.
+
+Input
+One number N (1 ≤ N < 10^9).
+
+Output
+Output 10 lines. The first line should contain the number of zeros needed, the second line should contain the number of ones needed, …, the tenth line should contain the number of nines needed.
 
 BREAK DOWN
+Sabemos que el número a evaluar tiene que ser un número dentro del rango (1 ≤ N < 10^9).
 
-- ¿El arreglo esta ordenado?
-No
+Para separar el número que me dan se me ocurrio meterlo en un array. 
+    
+    int temp = 1;
+    for(int i=0; i<num; i++){
+        arr[i] = temp;
+        temp++;
+    }
 
-- ¿Que pasa si un elemento del arreglo A no se encuentra en B?
-Vamos a suponer que eso no podría pasar
+    Por ejemplo, si el numero es 7 el siguiente for hace lo siguiente:
+    arr = [1, 2, 3, 4, 5]
 
-- ¿Que pasa si los arreglos no son del mismo tamaño?
-Suponemos que siempre seran del mismo tamaño
+Para ir contando el número de veces que se repite un número se me ocurrio utilizar "if" y "else if".
 
-- Debemos tener en cuenta lo siguiente:
-    A, B have equal lengths in range [1, 100].
-    A[i], B[i] are integers in range [0, 10^5]
+    int temp = 1;
+    for(int i=0; i<num; i++){
+        arr[i] = temp;
+        if(arr[i]==0){
+            cero++;
+        } else if (arr[i]==1){
+            uno++;
+        } else if (arr[i]==2){
+            dos++;
+        } else if (arr[i]==3){
+            tres++;
+        } else if (arr[i]==4){
+            cuatro++;
+        } else if (arr[i]==5){
+            cinco++;
+        } else if (arr[i]==6){
+            seis++;
+        } else if (arr[i]==7){
+            siete++;
+        } else if (arr[i]==8){
+            ocho++;
+        } else if (arr[i]==9){
+            nueve++;
+        }
+        temp++;
+    }
 
-Lo que nos lleva a afirmar que:
-    - No hay números negativos 
-    - Se debe de respetar un rango de 1 a 100.
-
-CASOS
-
-- Primer caso
-    Asumiendo que tenemos lo siguiente
-    A = [24,61,7,12]  B = [7,24,12,61]
-    1. Creamos un nuevo arreglo P del mismo tamaño que los arreglos A y B. En este caso P[] = 3
-    2. Tomamos el primer elemento de A y buscamos en que posición de B se encuentra el elemento y 
-    guardamos la posición en P. 24 se encuentra en la posición 1 de B. Por lo que P[]={1}.
-    3. Repetimos el paso anterior hasta que hayamos recorrido todo el arreglo de A.
-    Al final tendriamos que P = [1, 3, 0, 2]
-
-
-CONTEXTO
-
-Algoritmo que necesitamos:
-    - Un algoritmo de busqueda
+    De esta manera tendriamos como resultado:
+    0
+    1
+    1
+    1
+    1
+    1
+    0
+    0
+    0
+    0
 
 
 ANALIZAR
-
-¿Cuanto nos toma todo el proceso?
-n^2
-Todo este proceso nos toma n al cuadrado ya que debemos de buscar cada elemento de A en B.
-Para posteriormente guardar el resultado de la posición, en P.
+Como podemos observar, esta no es la manera mas optima de resolver el problema. Para guardar
+el numero, separado, en un array tenemos que recorrerlo todo y evaluar los digitos con 
+multiples "else if". Pero nuestro problema mas importante es que esta solución no funciona
+para un número mayor a 9, por lo que lo hace una solución bastante mala. 
 
 
 ¿LO PODEMOS HACER MEJOR?
 BREAK DOWN
+Definitivamente se puede hacer mejor. Por el momento no se me ocurre otra forma en la cual 
+guardar el numero ya separado. Lo que si se me ocurrio despues de esta solución fallida fue
+en como separar los digitos con modulo. 
+    Por ejemplo:
+    Si tenemos el número 12, con mi método el array quedaría de la siguiente forma:
+    arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    ¿Como podemos separar el número 10 en dos digitos?
+    Con modulos
+        - Primer paso: dividir el numero 10 entre 2. El resultado de la división es 1.
+        Este digito lo guardamos en una nueva posición de nuestro array.
+        - Segundo paso: Utilizamos modulos para obtener el residuo de 10 % 10. El
+        resultado es 0 por lo que lo guardamos en una nueva posición del array
+    Podemos comparar cada elemento del array y separar en digitos y expandir el array para 
+    guardarlos.
 
-A = [24,61,7,12]  B = [7,24,12,61]
-Utilizamos una hashtable donde guardaremos los elementos y posiciones del arreglo B.
-La key es el elemento del array y su valor es su posición dentro del array.
-
-1. Guardar los elementos y posiciones de B en una hashtable. 
-2. Tomamos el primer elementos de A y lo buscamso en la hashtable.
-3. Ya que encontramos el elemento en nuestra hashthable, guardamos su valor en un nuevo arreglo P. P[] = {1}
-4. Repetimos el paso anterior hasta que ya no tengamos que buscar mas elementos de A en la hashtable. 
-
-Resultado: P = [1, 3, 0, 2]
-
-ANALIZAR
-NumeroElementosDentroDelArray + HashTable
-n + n = 2n 
-Como el número dos es una constante, podemos decir que el tiempo es de n. 
+Sinceramente, no es una forma facil de implementar, de echo, no se me ocurre como implementarla.
+Simplemente es lo que pense que se podria hacer para dividir el número en digitos. 
 
 
 CONCLUSIÓN
-Como podemos observar, ambas formas resuelven el problema. La diferencia mas importante es que la primer forma lo resuelve en un tiempo de n^2 y la segunda forma en un tiempo de n. La primer forma es mas sencilla de implementar 
-ya que, no requiere de algoritmos complejos. Sin embargo, el tiempo de ejecución es muy poco eficiente a 
-comparación de la segunda forma. El problema especifica que los arreglos A y B tienen un rango del 1 al 100.
-Podemos observar que no son muchos los elementos que tenemos que analizar, por lo que la primer opcion no es
-una mala idea. Pero si en algun momento ese rango aumenta, sería comveniente implementar la segunda opcion. 
+Con este proyecto aprendí la importancía de analizar el problema y solucionarlo antes de programar.
+Lo leí y se me hizo bastante sencillo por lo que solo empece a escribir y escribir codigo. Ya que 
+lo acabe me di cuenta que mi solucion no era ni cerca de ser optima y tenía bastantes fallas. 
+Despues de pensarlo un rato se me ocurrio una solución que es la que explique anteriormente. Pero
+no se ni como implementarla y suena demasiado dificil que seguramente hay una forma mucho mas
+sencilla de resolver el problema. 
